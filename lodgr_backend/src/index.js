@@ -1,5 +1,6 @@
 import express from 'express';
-import hotelsRouter from './api/hotels.js';
+import 'dotenv/config';
+import hotelsRouter from './api/hotel.js';
 import connectDB from './infrastructure/db.js';
 
 const app = express();
@@ -7,7 +8,7 @@ const app = express();
 // Convert HTTPS payloads to JSON
 app.use(express.json());
 
-app.use("/api/hotels", hotelsRouter);
+app.use("/api/hotel", hotelsRouter);
 
 connectDB();
 
