@@ -41,67 +41,110 @@ const hotels = [
   },
 ];
 
-export const getAllHotels = (req,res) => {
-    res.status(200).json(hotels);
+export const getAllHotels = async (req,res) => {
+    try {
+      const hotels = await Hotel.find();
+      res.status(200).json(hotels);
+    }
+    catch (error) {
+      res.status(500).json({ error: error.message });
+    }
 };
 
-export const createHotel = (req, res) => {
-  const hotel = { ...req.body, _id: String(hotels.length + 1) };
-  if (!hotel.name || !hotel.image || !hotel.location) {
-    res.status(400).send();
-    return;
+export const createHotel = async (req, res) => {
+  try {
+    const hotelData = req.body;
+    if(
+      !hotelData.name ||
+      !hotelData.location ||
+      !hotelData.image ||
+      !hotelData.description
+    ) {
+      res.status(400).json({ error: "Missing required fields" });
+      return;
+    }
+    await Hotel.create(hotelData);
+    res.status(201).json({ message: "Hotel created successfully" });
   }
-  hotels.push(hotel);
-  res.status(201).send();
+  catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
-export const getHotelById = (req, res) => {
-  //   console.log(req.params);
-  const _id = req.params._id;
-  //   console.log(_id);
-  const hotel = hotels.find((el) => el._id === _id);
-  if (!hotel) {
-    res.status(404).send();
-    return;
+export const getHotelById = async (req, res) => {
+  try {
+    const _id = req.params._id;
+    const hotel = await Hotel.findById(_id);
+    if(!hotel) {
+      res.status(404).json({ error: "Hotel not found" });
+      return;
+    }
+    res.status(200).json(hotel);
   }
-  res.status(200).json(hotel);
+  catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
-export const updateHotel = (req, res) => {
-  const _id = req.params._id;
-  const index = hotels.findIndex((el) => el._id === _id);
-  if (index === -1) {
-    res.status(404).send();
-    return;
-  }
+export const updateHotel = async (req, res) => {
+  try {
+    const _id = req.params._id;
+    const hotelData = req.body;
+    if (
+      !hotelData.name ||
+      !hotelData.image ||
+      !hotelData.location ||
+      !hotelData.price ||
+      !hotelData.description
+    ) {
+      res.status(400).send();
+      return;
+    }
 
-  const data = req.body;
-  const updatedHotel = { ...hotels[index], ...data };
-  hotels.splice(index, 1);
-  hotels.push(updatedHotel);
-  res.status(200).send();
+    const hotel = await Hotel.findById(_id);
+    if (!hotel) {
+      res.status(404).send();
+      return;
+    }
+
+    await Hotel.findByIdAndUpdate(_id, hotelData);
+    res.status(200).json({ message: "Hotel updated successfully" }) ;
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
-export const patchHotel = (req, res) => {
-  const _id = req.params._id;
-  const hotel = hotels.find((el) => el._id === _id);
-  if (!hotel) {
-    res.status(404).send();
-    return;
+export const patchHotel =  async (req, res) => {
+  try {
+    const _id = req.params._id;
+    const hotelData = req.body;
+    if (!hotelData.price) {
+      res.status(400).send();
+      return;
+    }
+    const hotel = await Hotel.findById(_id);
+    if (!hotel) {
+      res.status(404).send();
+      return;
+    }
+    await Hotel.findByIdAndUpdate(_id, { price: hotelData.price });
+    res.status(200).send();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-
-  const data = req.body;
-  hotel.price = data.price;
-  res.status(200).send();
 };
 
-export const deleteHotel = (req, res) => {
-  const _id = req.params._id;
-  const index = hotels.findIndex((el) => el._id === _id);
-  if (index === -1) {
-    res.status(404).send();
-    return;
+export const deleteHotel = async (req, res) => {
+  try {
+    const _id = req.params._id;
+    const hotel = await Hotel.findById(_id);
+    if (!hotel) {
+      res.status(404).send();
+      return;
+    }
+    await Hotel.findByIdAndDelete(_id);
+    res.status(200).json({ message: "Hotel deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-  hotels.splice(index, 1);
-  res.status(200).send();
 };
