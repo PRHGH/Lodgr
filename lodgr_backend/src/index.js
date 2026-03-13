@@ -1,5 +1,4 @@
 import express from 'express';
-import 'dotenv/config';
 import hotelsRouter from './api/hotel.js';
 import reviewsRouter from './api/review.js';
 import bookingsRouter from './api/booking.js';
