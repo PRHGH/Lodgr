@@ -1,5 +1,5 @@
 import express from 'express';
-import { createBooking, getBookingById, getBookingsByUserId, patchBooking, deleteBooking } from '../aplication/booking.js';
+import { createBooking, getBookingById, getBookingsByUserId, patchBooking, deleteBooking } from '../application/booking.js';
 
 const bookingsRouter = express.Router();
 

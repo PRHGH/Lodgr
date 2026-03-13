@@ -6,4 +6,4 @@ const reviewsRouter = express.Router();
 reviewsRouter.post("/", createReview);
 reviewsRouter.get("/hotel/:hotelId", getReviewsForHotel); //! /api/reviews/hotel/:hotelId
 
-export default reviewRouter;
+export default reviewsRouter;

@@ -15,7 +15,7 @@ import Hotel from "../infrastructure/entities/Hotel.js";
 //   }
 // };
 
-const createReview = async (req, res) => {
+export const createReview = async (req, res) => {
   try {
     const reviewData = req.body;
     if (!reviewData.rating || !reviewData.comment || !reviewData.hotelId) {
@@ -59,7 +59,7 @@ const createReview = async (req, res) => {
 //   }
 // };
 
-const getReviewsForHotel = async (req, res) => {
+export const getReviewsForHotel = async (req, res) => {
     try {
       const hotelId = req.params.hotelId;
       const hotel = await Hotel.findById(hotelId).populate("reviews");
@@ -72,7 +72,4 @@ const getReviewsForHotel = async (req, res) => {
     } catch (error) {
       res.status(500).send();
     }
-  };
-
-
-export { createReview, getReviewsForHotel };
+};
