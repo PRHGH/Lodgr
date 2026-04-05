@@ -8,6 +8,7 @@ const hotels = [
     rating: 4.7,
     reviews: ["K", "L"],
     price: 160,
+    description: "Set in the heart of Montmartre, this elegant hotel blends classic Parisian charm with bright modern rooms. Guests can enjoy scenic city views, cozy lounges, and easy access to local cafes and galleries.",
   },
   {
     _id: "2",
@@ -18,6 +19,7 @@ const hotels = [
     rating: 4.7,
     reviews: ["K", "L"],
     price: 200,
+    description: "A chic urban retreat with warm interiors and luxurious amenities, perfect for exploring Sydney’s vibrant harbor. The lodge offers stylish rooms, a relaxing rooftop terrace, and close proximity to the city’s top attractions.",
   },
   {
     _id: "3",
@@ -28,6 +30,7 @@ const hotels = [
     rating: 4.4,
     reviews: ["K", "L"],
     price: 250,
+    description: "This contemporary hotel sits beneath the glittering Tokyo Tower and offers sleek rooms with cityscape views. Guests will enjoy easy access to local dining, cultural landmarks, and efficient transit connections.",
   },
   {
     _id: "4",
@@ -38,6 +41,7 @@ const hotels = [
     rating: 4.8,
     reviews: ["K", "L"],
     price: 300,
+    description: "A premium waterfront destination with sweeping harbor views and refined hospitality. The hotel features elegant suites, waterfront dining, and a prime location near Sydney’s iconic landmarks.",
   },
 ];
 
