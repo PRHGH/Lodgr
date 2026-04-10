@@ -1,3 +1,5 @@
+import Hotel from '../infrastructure/entities/Hotel.js';
+
 const hotels = [
   {
     _id: "1",

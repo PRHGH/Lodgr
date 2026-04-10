@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config({ override: true });
+
 import express from 'express';
 import hotelsRouter from './api/hotel.js';
 import reviewsRouter from './api/review.js';
@@ -9,9 +12,9 @@ const app = express();
 // Convert HTTPS payloads to JSON
 app.use(express.json());
 
-app.use("/api/hotel", hotelsRouter);
-app.use("/api/review", reviewsRouter);
-app.use("/api/booking", bookingsRouter);
+app.use("/api/hotels", hotelsRouter);
+app.use("/api/reviews", reviewsRouter);
+app.use("/api/bookings", bookingsRouter);
 
 connectDB();
 
