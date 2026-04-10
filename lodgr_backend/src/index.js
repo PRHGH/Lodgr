@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config({ override: true });
 
+import cors from 'cors';
 import express from 'express';
 import hotelsRouter from './api/hotel.js';
 import reviewsRouter from './api/review.js';
@@ -12,6 +13,11 @@ const app = express();
 
 // Convert HTTPS payloads to JSON
 app.use(express.json());
+app.use(
+    cors({
+        origin: "http://localhost:5173",
+    })
+);
 
 app.use("/api/hotels", hotelsRouter);
 app.use("/api/reviews", reviewsRouter);

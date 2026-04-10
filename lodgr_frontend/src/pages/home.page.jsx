@@ -8,7 +8,7 @@ import HotelListings from '@/Components/HotelListings';
 
 function HomePage() {
 
-  console.log("App loaded");
+
   return (
     <>
      <div className="relative min-h [85vh]">
