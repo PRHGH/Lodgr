@@ -24,9 +24,18 @@ app.use("/api/reviews", reviewsRouter);
 app.use("/api/bookings", bookingsRouter);
 app.use("/api/locations", locationsRouter);
 
-connectDB();
-
 const PORT = 8000
-app.listen(PORT, () => {
-    console.log("Server is running on PORT ", PORT);
-});
+const startServer = async () => {
+    const connected = await connectDB();
+
+    if (!connected) {
+        console.error("Backend startup aborted: database connection failed.");
+        return;
+    }
+
+    app.listen(PORT, () => {
+        console.log("Server is running on PORT ", PORT);
+    });
+};
+
+startServer();
