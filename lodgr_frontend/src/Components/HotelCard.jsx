@@ -10,7 +10,7 @@ function HotelCard(props) {
 //     setNum(num + 1);
 // };
     return(
-        <Link to={"/hotels/" + props.hotel._id} className="block group relative border-2 border-[#0c56d50e] p-2 rounded-xl transition-shadow hover:shadow-lg">
+        <Link to={"/hotels/" + props.hotel._id} className="block group relative border-2 border-[#0c56d50e] p-3 rounded-3xl transition-shadow hover:shadow-lg">
             <div className="relative aspect-4/3 overflow-hidden rounded-xl">
                 <img
                     src={props.hotel.image}

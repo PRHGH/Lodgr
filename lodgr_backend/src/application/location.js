@@ -5,7 +5,7 @@ export const getAllLocations = async (req, res) => {
     const locations = await Location.find();
     res.status(200).json(locations);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message }); 
   }
 };
 
