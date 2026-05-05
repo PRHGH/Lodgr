@@ -1,11 +1,11 @@
-import Navigation from "@/Components/Navigation";
+import { SignIn } from "@clerk/clerk-react";
 
 const SignInPage = () => {
-    return(
-        <main>
-            <h1>Sign In</h1>
-        </main>
-    );
+  return (
+    <main className="px-4 min-h-screen flex items-center justify-center">
+      <SignIn />
+    </main>
+  );
 };
 
 export default SignInPage;
