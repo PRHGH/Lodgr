@@ -1,92 +1,91 @@
-import Location from '../infrastructure/entities/Location.js';
+import Location from "../infrastructure/entities/Location.js";
+import NotFoundError from "../domain/errors/not-found-error.js";
+import ValidationError from "../domain/errors/validation-error.js";
 
-export const getAllLocations = async (req, res) => {
+export const getAllLocations = async (req, res, next) => {
   try {
     const locations = await Location.find();
     res.status(200).json(locations);
+    return;
   } catch (error) {
-    res.status(500).json({ error: error.message }); 
+    next(error);
   }
 };
 
-export const createLocation = async (req, res) => {
+export const createLocation = async (req, res, next) => {
   try {
     const locationData = req.body;
-
     if (!locationData.name) {
-      res.status(400).json({ error: "Location name is required" });
-      return;
+      throw new ValidationError("Location name is required");
     }
-
-    const location = await Location.create(locationData);
-    res.status(201).json(location);
+    await Location.create(locationData);
+    res.status(201).send();
   } catch (error) {
-    if (error.code === 11000) {
-      res.status(400).json({ error: "Location already exists" });
-    } else {
-      res.status(500).json({ error: error.message });
-    }
+    next(error);
   }
 };
 
-export const getLocationById = async (req, res) => {
+export const getLocationById = async (req, res, next) => {
   try {
     const _id = req.params._id;
     const location = await Location.findById(_id);
-
     if (!location) {
-      res.status(404).json({ error: "Location not found" });
-      return;
+      throw new NotFoundError("Location not found");
     }
-
     res.status(200).json(location);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-export const updateLocation = async (req, res) => {
+export const updateLocation = async (req, res, next) => {
   try {
     const _id = req.params._id;
     const locationData = req.body;
-
     if (!locationData.name) {
-      res.status(400).json({ error: "Location name is required" });
-      return;
+      throw new ValidationError("Location name is required");
     }
 
-    const location = await Location.findByIdAndUpdate(_id, locationData, {
-      new: true,
-      runValidators: true,
-    });
-
+    const location = await Location.findById(_id);
     if (!location) {
-      res.status(404).json({ error: "Location not found" });
-      return;
+      throw new NotFoundError("Location not found");
     }
 
-    res.status(200).json(location);
+    await Location.findByIdAndUpdate(_id, locationData);
+    res.status(200).send();
   } catch (error) {
-    if (error.code === 11000) {
-      res.status(400).json({ error: "Location already exists" });
-    } else {
-      res.status(500).json({ error: error.message });
-    }
+    next(error);
   }
 };
 
-export const deleteLocation = async (req, res) => {
+export const patchLocation = async (req, res, next) => {
   try {
     const _id = req.params._id;
-    const location = await Location.findByIdAndDelete(_id);
-
-    if (!location) {
-      res.status(404).json({ error: "Location not found" });
-      return;
+    const locationData = req.body;
+    if (!locationData.name) {
+      throw new ValidationError("Location name is required");
     }
-
-    res.status(200).json({ message: "Location deleted successfully" });
+    const location = await Location.findById(_id);
+    if (!location) {
+      throw new NotFoundError("Location not found");
+    }
+    await Location.findByIdAndUpdate(_id, { name: locationData.name });
+    res.status(200).send();
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
+  }
+};
+
+export const deleteLocation = async (req, res, next) => {
+  try {
+    const _id = req.params._id;
+    const location = await Location.findById(_id);
+    if (!location) {
+      throw new NotFoundError("Location not found");
+    }
+    await Location.findByIdAndDelete(_id);
+    res.status(200).send();
+  } catch (error) {
+    next(error);
   }
 };

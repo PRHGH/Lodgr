@@ -43,9 +43,9 @@ function HotelListings() {
 
     const filteredHotels =
         selectedLocation === 0
-        ? hotels ?? []
+        ? (hotels ?? []).filter(Boolean)
         : (hotels ?? []).filter((hotel) => {
-            return hotel.location.includes(selectedLocationName);
+            return hotel?.location?.includes(selectedLocationName);
             });
 
     const isLoading = isHotelsLoading || isLocationsLoading;

@@ -7,6 +7,7 @@ import hotelsRouter from './api/hotel.js';
 import reviewsRouter from './api/review.js';
 import bookingsRouter from './api/booking.js';
 import locationsRouter from './api/location.js';
+import globalErrorHandlingMiddleware from './api/middleware/global-error-handling-middleware.js';
 import connectDB from './infrastructure/db.js';
 
 const app = express();
@@ -23,6 +24,7 @@ app.use("/api/hotels", hotelsRouter);
 app.use("/api/reviews", reviewsRouter);
 app.use("/api/bookings", bookingsRouter);
 app.use("/api/locations", locationsRouter);
+app.use(globalErrorHandlingMiddleware);
 
 const PORT = 8000
 const startServer = async () => {

@@ -1,21 +1,22 @@
 import express from 'express';
 import { createBooking, getBookingById, getBookingsByUserId, patchBooking, deleteBooking } from '../application/booking.js';
+import isAuthenticated from './middleware/authentication-middleware.js';
 
 const bookingsRouter = express.Router();
 
 bookingsRouter
     .route("/")
-    .post(createBooking);
+    .post(isAuthenticated, createBooking);
     
 bookingsRouter
     .route("/:_id")
-    .get(getBookingById)
-    .patch(patchBooking)
-    .delete(deleteBooking);
+    .get(isAuthenticated, getBookingById)
+    .patch(isAuthenticated, patchBooking)
+    .delete(isAuthenticated, deleteBooking);
 
 bookingsRouter 
     .route("/user/:_id")
-    .get(getBookingsByUserId);
+    .get(isAuthenticated, getBookingsByUserId);
 
 export default bookingsRouter;
 

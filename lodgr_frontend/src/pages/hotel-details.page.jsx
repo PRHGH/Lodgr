@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import { hotels } from "../hotelData.js";
+import { useGetHotelByIdQuery } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,11 +9,39 @@ import { Building2 } from "lucide-react";
 import { Tv } from "lucide-react";
 import { Coffee } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const HotelDetailsPage = () => {
   const { _id } = useParams();
-  
-  const hotel = hotels.find((hotel) => hotel._id === _id);
+
+  const {
+    data: hotel,
+    isLoading,
+    isError,
+  } = useGetHotelByIdQuery(_id, { skip: !_id });
+
+  if (isLoading) {
+    return (
+      <main className="px-4">
+        <div className="grid md:grid-cols-2 gap-8">
+          <Skeleton className="h-[400px] w-full" />
+          <div className="space-y-4">
+            <Skeleton className="h-10 w-3/4" />
+            <Skeleton className="h-6 w-1/2" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (isError || !hotel) {
+    return (
+      <main className="px-4">
+        <p className="text-red-500">Error loading hotel details.</p>
+      </main>
+    );
+  }
 
   return (
     <main className="px-4">
@@ -50,7 +78,7 @@ const HotelDetailsPage = () => {
             <Star className="h-5 w-5 fill-primary text-primary" />
             <span className="font-bold">{hotel?.rating ?? "No rating"}</span>
             <span className="text-muted-foreground">
-              ({hotel?.reviews.length === 0 ? "No" : hotel?.reviews.length} reviews)
+              ({hotel.reviews?.length === 0 ? "No" : hotel.reviews?.length ?? "No"} reviews)
             </span>
           </div>
           <p className="text-muted-foreground">{hotel.description}</p>
