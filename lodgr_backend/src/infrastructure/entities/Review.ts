@@ -11,9 +11,8 @@ const reviewSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  userId:{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+  userId: {
+    type: String, //! clerk userIds are passed
     required: true,
   },
   // hotelId: {
@@ -23,5 +22,6 @@ const reviewSchema = new mongoose.Schema({
   // },
 });
 
-const Review = mongoose.model("Review", reviewSchema);      
+const Review = mongoose.model("Review", reviewSchema);
+
 export default Review;

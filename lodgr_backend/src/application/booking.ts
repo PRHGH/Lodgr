@@ -1,20 +1,25 @@
-import Booking from "../infrastructure/entities/Booking.js";
-import Hotel from "../infrastructure/entities/Hotel.js";
-import User from "../infrastructure/entities/User.js";
-import NotFoundError from "../domain/errors/not-found-error.js";
-import ValidationError from "../domain/errors/validation-error.js";
+import { Request, Response, NextFunction } from "express";
+import { getAuth } from "@clerk/express";
+import Booking from "../infrastructure/entities/Booking";
+import Hotel from "../infrastructure/entities/Hotel";
+import NotFoundError from "../domain/errors/not-found-error";
+import ValidationError from "../domain/errors/validation-error";
 
-export const createBooking = async (req, res, next) => {
+export const createBooking = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const bookingData = req.body;
+    const { userId } = getAuth(req);
 
     if (
       !bookingData.hotelId ||
-      !bookingData.userId ||
       !bookingData.checkIn ||
       !bookingData.checkOut ||
       !bookingData.roomNumber ||
-      bookingData.paymentStatus === undefined
+      !userId
     ) {
       throw new ValidationError("Missing required fields");
     }
@@ -24,39 +29,39 @@ export const createBooking = async (req, res, next) => {
       throw new NotFoundError("Hotel not found");
     }
 
-    const user = await User.findById(bookingData.userId);
-    if (!user) {
-      throw new NotFoundError("User not found");
-    }
-
     await Booking.create({
-      userId: bookingData.userId,
+      userId,
       hotelId: bookingData.hotelId,
       checkIn: bookingData.checkIn,
       checkOut: bookingData.checkOut,
       roomNumber: bookingData.roomNumber,
       paymentStatus: "PENDING",
     });
-    res.status(201).json({ message: "Booking created successfully" });
+    res.status(201).send();
   } catch (error) {
     next(error);
   }
 };
 
-export const getBookingsByUserId = async (req, res, next) => {
+export const getBookingsByUserId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const _id = req.params._id;
-    const user = await User.findById(_id);
-    if (!user) {
-      throw new NotFoundError("User not found");
-    }
-    res.status(200).json(await Booking.find({ userId: user._id }));
+    const userId = req.params._id;
+    const bookings = await Booking.find({ userId });
+    res.status(200).json(bookings);
   } catch (error) {
     next(error);
   }
 };
 
-export const getBookingById = async (req, res, next) => {
+export const getBookingById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const _id = req.params._id;
     const booking = await Booking.findById(_id);
@@ -70,13 +75,16 @@ export const getBookingById = async (req, res, next) => {
   }
 };
 
-export const patchBooking = async (req, res, next) => {
+export const patchBooking = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const _id = req.params._id;
     const bookingData = req.body;
     if (
       !bookingData.hotelId ||
-      !bookingData.userId ||
       !bookingData.checkIn ||
       !bookingData.checkOut ||
       !bookingData.roomNumber
@@ -89,30 +97,28 @@ export const patchBooking = async (req, res, next) => {
       throw new NotFoundError("Hotel not found");
     }
 
-    const user = await User.findById(bookingData.userId);
-    if (!user) {
-      throw new NotFoundError("User not found");
-    }
-
     const booking = await Booking.findById(_id);
     if (!booking) {
       throw new NotFoundError("Booking not found");
     }
 
-    booking.userId = bookingData.userId;
     booking.hotelId = bookingData.hotelId;
     booking.checkIn = bookingData.checkIn;
     booking.checkOut = bookingData.checkOut;
     booking.roomNumber = bookingData.roomNumber;
     booking.paymentStatus = bookingData.paymentStatus;
     await booking.save();
-    res.status(200).json({ message: "Booking updated successfully" });
+    res.status(200).send();
   } catch (error) {
     next(error);
   }
 };
 
-export const deleteBooking = async (req, res, next) => {
+export const deleteBooking = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const _id = req.params._id;
     const booking = await Booking.findById(_id);
@@ -120,7 +126,7 @@ export const deleteBooking = async (req, res, next) => {
       throw new NotFoundError("Booking not found");
     }
     await Booking.findByIdAndDelete(_id);
-    res.status(200).json({ message: "Booking deleted successfully" });
+    res.status(200).send();
   } catch (error) {
     next(error);
   }

@@ -6,8 +6,8 @@ import {
   updateLocation,
   patchLocation,
   deleteLocation,
-} from "../application/location.js";
-import isAuthenticated from "./middleware/authentication-middleware.js";
+} from "../application/location";
+import isAuthenticated from "./middleware/authentication-middleware";
 
 const locationsRouter = express.Router();
 
@@ -23,4 +23,4 @@ locationsRouter
   .patch(patchLocation)
   .delete(deleteLocation);
 
-export default locationsRouter;
+export default locationsRouter; 

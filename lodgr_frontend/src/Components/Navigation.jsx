@@ -52,7 +52,7 @@ function Navigation() {
                     <Button
                         size="sm"
                         asChild
-                        className="bg-white text-black hover:bg-gray-200 text-xs hidden md:flex"
+                        className="bg-[#475569] border-2 border-[#475569] text-white rounded-full hover:bg-[#64748b] hover:text-[#5eead4] hover:border-[#5eead4] text-xs hidden md:flex"
                     >
                         <Link to="/account">My Account</Link>
                     </Button>
