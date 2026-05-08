@@ -1,21 +1,24 @@
+import Hero from "../Components/Hero";
 
-import HotelCard from '@/Components/HotelCard'
-import {hotels} from '@/hotelData'
-import Navigation from '@/Components/Navigation';
-import { Switch } from '@/Components/ui/switch';
-import Hero from '@/Components/Hero';
-import HotelListings from '@/Components/HotelListings';
+import HotelListings from "../Components/HotelListings";
 
 function HomePage() {
 
+  // const count = useSelector((state) => state.counter);
+  // console.log(count);
+
+  // const dispatch = useDispatch();
 
   return (
-    <>
-     <div className="relative min-h [85vh]">
-      <Hero />
-     </div>
-     <HotelListings />
-    </>
+    <main>
+      <div className="relative min-h-[85vh]">
+        <Hero />
+      </div>
+      {/* <Button onClick={() => dispatch(incrementByAmount(5))}>
+        <PlusCircle className="w-4 h-4" />
+      </Button> */}
+      <HotelListings />
+    </main>
   );
 }
 

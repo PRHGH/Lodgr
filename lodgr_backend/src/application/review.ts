@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import Review from "../infrastructure/entities/Review";
 import Hotel from "../infrastructure/entities/Hotel";
 import NotFoundError from "../domain/errors/not-found-error";
+import UnauthorizedError from "../domain/errors/unauthorized-error";
 import ValidationError from "../domain/errors/validation-error";
 import { getAuth } from "@clerk/express";
 
@@ -18,7 +19,7 @@ const createReview = async (
 
     const { userId } = getAuth(req);
     if (!userId) {
-      throw new ValidationError("User is required");
+      throw new UnauthorizedError("Unauthorized");
     }
 
     const hotel = await Hotel.findById(reviewData.hotelId);

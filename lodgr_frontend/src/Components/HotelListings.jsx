@@ -7,8 +7,6 @@ import {
 import { Skeleton } from "./ui/skeleton";
 import { useState } from "react";
 import LocationsTab from "./LocationsTab";
-import { Button } from "./ui/button";
-import { PlusCircle } from "lucide-react";
 import { toast } from "sonner";
 
 function HotelListings() {
@@ -125,14 +123,6 @@ function HotelListings() {
             Discover the most trending hotels worldwide for an unforgettable
             experience.
             </p>
-
-            <Button
-            disabled={isAddLocationLoading}
-            className={`${isAddLocationLoading ? "opacity-50" : ""}`}
-            onClick={handleAddLocation}
-            >
-            <PlusCircle className="w-4 h-4" /> Add Location
-            </Button>
         </div>
 
         <div className="flex justify-center bg-[#bfd0e8aa] py-0.5 rounded-md space-x-10 mb-8">

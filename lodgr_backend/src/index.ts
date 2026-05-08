@@ -7,7 +7,6 @@ import hotelsRouter from "./api/hotel";
 import connectDB from "./infrastructure/db";
 import reviewRouter from "./api/review";
 import locationsRouter from "./api/location";
-import bookingsRouter from "./api/booking";
 import globalErrorHandlingMiddleware from "./api/middleware/global-error-handling-middleware";
 
 import { clerkMiddleware } from "@clerk/express";
@@ -31,7 +30,6 @@ app.use(clerkMiddleware()); // Reads the JWT from the request and sets the auth 
 app.use("/api/hotels", hotelsRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/locations", locationsRouter);
-app.use("/api/bookings", bookingsRouter);
 
 app.use(globalErrorHandlingMiddleware);
 

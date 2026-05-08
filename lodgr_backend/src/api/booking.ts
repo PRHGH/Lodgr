@@ -10,7 +10,9 @@ import isAuthenticated from "./middleware/authentication-middleware";
 
 const bookingsRouter = express.Router();
 
-bookingsRouter.route("/").post(isAuthenticated, createBooking);
+bookingsRouter
+  .route("/")
+  .post(isAuthenticated, createBooking);
 
 bookingsRouter
   .route("/:_id")
@@ -18,6 +20,8 @@ bookingsRouter
   .patch(isAuthenticated, patchBooking)
   .delete(isAuthenticated, deleteBooking);
 
-bookingsRouter.route("/user/:_id").get(isAuthenticated, getBookingsByUserId);
+bookingsRouter
+  .route("/user/:_id")
+  .get(isAuthenticated, getBookingsByUserId);
 
 export default bookingsRouter;

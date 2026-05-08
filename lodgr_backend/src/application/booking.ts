@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { getAuth } from "@clerk/express";
+import mongoose from "mongoose";
 import Booking from "../infrastructure/entities/Booking";
 import Hotel from "../infrastructure/entities/Hotel";
 import NotFoundError from "../domain/errors/not-found-error";
 import ValidationError from "../domain/errors/validation-error";
+import { CreateBookingDTO, UpdateBookingDTO } from "../domain/dtos/booking";
 
 export const createBooking = async (
   req: Request,
@@ -12,32 +14,31 @@ export const createBooking = async (
 ) => {
   try {
     const bookingData = req.body;
+    const result = CreateBookingDTO.safeParse(bookingData);
     const { userId } = getAuth(req);
 
-    if (
-      !bookingData.hotelId ||
-      !bookingData.checkIn ||
-      !bookingData.checkOut ||
-      !bookingData.roomNumber ||
-      !userId
-    ) {
-      throw new ValidationError("Missing required fields");
+    if (!result.success) {
+      throw new ValidationError(`${result.error.message}`);
     }
 
-    const hotel = await Hotel.findById(bookingData.hotelId);
+    if (!userId) {
+      throw new ValidationError("User is required");
+    }
+
+    const hotel = await Hotel.findById(result.data.hotelId);
     if (!hotel) {
       throw new NotFoundError("Hotel not found");
     }
 
-    await Booking.create({
+    const booking = await Booking.create({
       userId,
-      hotelId: bookingData.hotelId,
-      checkIn: bookingData.checkIn,
-      checkOut: bookingData.checkOut,
-      roomNumber: bookingData.roomNumber,
+      hotelId: result.data.hotelId,
+      checkIn: result.data.checkIn,
+      checkOut: result.data.checkOut,
+      roomNumber: result.data.roomNumber,
       paymentStatus: "PENDING",
     });
-    res.status(201).send();
+    res.status(201).json(booking);
   } catch (error) {
     next(error);
   }
@@ -83,16 +84,13 @@ export const patchBooking = async (
   try {
     const _id = req.params._id;
     const bookingData = req.body;
-    if (
-      !bookingData.hotelId ||
-      !bookingData.checkIn ||
-      !bookingData.checkOut ||
-      !bookingData.roomNumber
-    ) {
-      throw new ValidationError("Missing required fields");
+    const result = UpdateBookingDTO.safeParse(bookingData);
+
+    if (!result.success) {
+      throw new ValidationError(`${result.error.message}`);
     }
 
-    const hotel = await Hotel.findById(bookingData.hotelId);
+    const hotel = await Hotel.findById(result.data.hotelId);
     if (!hotel) {
       throw new NotFoundError("Hotel not found");
     }
@@ -102,11 +100,13 @@ export const patchBooking = async (
       throw new NotFoundError("Booking not found");
     }
 
-    booking.hotelId = bookingData.hotelId;
-    booking.checkIn = bookingData.checkIn;
-    booking.checkOut = bookingData.checkOut;
-    booking.roomNumber = bookingData.roomNumber;
-    booking.paymentStatus = bookingData.paymentStatus;
+    booking.hotelId = new mongoose.Types.ObjectId(result.data.hotelId);
+    booking.checkIn = result.data.checkIn;
+    booking.checkOut = result.data.checkOut;
+    booking.roomNumber = result.data.roomNumber;
+    if (result.data.paymentStatus) {
+      booking.paymentStatus = result.data.paymentStatus;
+    }
     await booking.save();
     res.status(200).send();
   } catch (error) {

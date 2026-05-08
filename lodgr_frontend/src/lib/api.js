@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // const getAllHotels = async () => {
 //   try {
@@ -38,33 +38,78 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 // export { getAllHotels, getAllLocations };
 
-
 // Define a service using a base URL and expected endpoints
 export const api = createApi({
-  reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8000/api/' }),
+  reducerPath: "api",
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:8000/api/",
+    prepareHeaders: async (headers) => {
+      return new Promise((resolve) => {
+        async function checkToken() {
+          const clerk = window.Clerk;
+          if (clerk) {
+            const token = await clerk.session?.getToken();
+            headers.set("Authorization", `Bearer ${token}`);
+            resolve(headers);
+          } else {
+            setTimeout(checkToken, 500);
+          }
+        }
+        checkToken();
+      });
+    },
+  }),
   endpoints: (build) => ({
     getAllHotels: build.query({
-      query: () => 'hotels',
+      query: () => "hotels",
     }),
     getHotelById: build.query({
-      query: (_id) => `hotels/${_id}`,
+      query: (id) => `hotels/${id}`,
+    }),
+    createHotel: build.mutation({
+      query: (hotel) => ({
+        url: "hotels",
+        method: "POST",
+        body: hotel,
+      }),
     }),
     addLocation: build.mutation({
       query: (location) => ({
-        url: 'locations',
-        method: 'POST',
+        url: "locations",
+        method: "POST",
         body: {
           name: location.name,
         },
       }),
     }),
+    addReview: build.mutation({
+      query: (review) => ({
+        url: "reviews",
+        method: "POST",
+        body: review,
+      }),
+    }),
+    createBooking: build.mutation({
+      query: (booking) => ({
+        url: "bookings",
+        method: "POST",
+        body: booking,
+      }),
+    }),
     getAllLocations: build.query({
-      query: () => 'locations',
+      query: () => "locations",
     }),
   }),
-})
+});
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetAllHotelsQuery, useGetHotelByIdQuery, useAddLocationMutation, useGetAllLocationsQuery } = api
+export const {
+  useGetAllHotelsQuery,
+  useGetHotelByIdQuery,
+  useCreateHotelMutation,
+  useAddLocationMutation,
+  useGetAllLocationsQuery,
+  useAddReviewMutation,
+  useCreateBookingMutation,
+} = api;
