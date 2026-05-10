@@ -9,7 +9,8 @@ import { Link, useSearchParams } from "react-router";
 
 export default function BookingCompletePage() {
   const [searchParams] = useSearchParams();
-  const sessionId = searchParams.get("session_id");
+  const sessionId =
+    searchParams.get("session_id") ?? searchParams.get("payment_session_id");
   const [confirmCheckoutSession, { data, isLoading, isError, error }] =
     useConfirmCheckoutSessionMutation();
 
