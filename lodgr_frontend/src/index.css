@@ -42,25 +42,25 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --radius: 0.75rem;
+  --background: oklch(0.975 0.008 80);
+  --foreground: oklch(0.16 0.005 70);
+  --card: oklch(0.995 0.003 80);
+  --card-foreground: oklch(0.16 0.005 70);
+  --popover: oklch(0.995 0.003 80);
+  --popover-foreground: oklch(0.16 0.005 70);
+  --primary: oklch(0.145 0.004 70);
+  --primary-foreground: oklch(0.985 0.006 80);
+  --secondary: oklch(0.935 0.015 78);
+  --secondary-foreground: oklch(0.18 0.006 70);
+  --muted: oklch(0.94 0.012 78);
+  --muted-foreground: oklch(0.48 0.012 70);
+  --accent: oklch(0.91 0.028 70);
+  --accent-foreground: oklch(0.18 0.006 70);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(0.86 0.016 78);
+  --input: oklch(0.88 0.014 78);
+  --ring: oklch(0.39 0.01 70);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -116,5 +116,28 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  ::selection {
+    @apply bg-foreground text-background;
+  }
+}
+
+@layer components {
+  .editorial-shell {
+    @apply mx-auto max-w-[1440px] px-3 sm:px-5;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-medium uppercase tracking-normal text-neutral-700 shadow-sm;
+  }
+
+  .black-pill {
+    @apply rounded-full bg-neutral-950 text-white shadow-sm transition hover:bg-neutral-800;
+  }
+
+  .cream-panel {
+    @apply rounded-xl border border-black/5 bg-[#f2eee8];
   }
 }

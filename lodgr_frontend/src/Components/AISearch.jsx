@@ -1,10 +1,10 @@
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 
-import { Sparkles } from "lucide-react";
+import { Sparkles, X } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { useState } from "react";
-import { setQuery } from "@/lib/features/searchSlice";
+import { useEffect, useState } from "react";
+import { clearQuery, setQuery } from "@/lib/features/searchSlice";
 
 export default function AISearch() {
   const dispatch = useDispatch();
@@ -12,31 +12,68 @@ export default function AISearch() {
   const [value, setValue] = useState("");
 
   function handleSearch() {
-    dispatch(setQuery(value));
+    if (value.trim()) {
+      dispatch(setQuery(value.trim()));
+    }
   }
 
+  function handleClear() {
+    setValue("");
+    dispatch(clearQuery());
+  }
+
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        handleClear();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  });
+
   return (
-    <div className="z-10 w-full max-w-lg">
-      <div className="relative flex items-center">
+    <form
+      className="z-10 w-full"
+      onSubmit={(event) => {
+        event.preventDefault();
+        handleSearch();
+      }}
+    >
+      <div className="rounded-2xl bg-white p-3 shadow-2xl shadow-black/20 sm:rounded-full">
+        <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
         <div className="relative grow">
           <Input
-            placeholder="Search for the experience you want" // Short placeholder for mobile
+            placeholder="Quiet beach hotel, romantic city escape..."
             name="query"
             value={value}
-            className="bg-[#1a1a1a] text-sm sm:text-base text-white placeholder:text-white/70 placeholder:text-sm sm:placeholder:text-base sm:placeholder:content-['Describe_your_destination...'] border-0 rounded-full py-6 pl-4 pr-12 sm:pr-32 w-full transition-all"
+            className="h-12 w-full rounded-full border-black/10 bg-[#f6f1ea] px-5 pr-12 text-sm text-neutral-950 placeholder:text-neutral-500 sm:text-base"
             onChange={(e) => setValue(e.target.value)}
           />
+          {value && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 rounded-full text-neutral-500 hover:bg-black/5"
+              onClick={handleClear}
+              aria-label="Clear AI search"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
         </div>
 
         <Button
-          type="button"
-          className="absolute right-2 h-[80%] my-auto bg-black text-white rounded-full px-2 sm:px-4 flex items-center gap-x-2 border-white border-2 hover:bg-black/80 transition-colors"
-          onClick={handleSearch}
+          type="submit"
+          className="black-pill h-12 gap-x-2 rounded-full px-6"
         >
-          <Sparkles className="w-4 h-4 fill-white" />
+          <Sparkles className="h-4 w-4" />
           <span className="text-sm">AI Search</span>
         </Button>
+        </div>
       </div>
-    </div>
+    </form>
   );
 }

@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/Components/ui/button";
@@ -15,26 +15,28 @@ const formSchema = z
   .object({
     checkIn: z.string(),
     checkOut: z.string(),
-    roomNumber: z.coerce.number().int().positive(),
   })
   .refine((data) => new Date(data.checkOut) > new Date(data.checkIn), {
     message: "Check-out date must be after check-in date",
     path: ["checkOut"],
   });
 
-export default function BookingForm({ onSubmit, isLoading, hotelId }) {
-  const today = new Date().toISOString().split("T")[0];
-  const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split("T")[0];
+const initialToday = new Date().toISOString().split("T")[0];
+const initialTomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000)
+  .toISOString()
+  .split("T")[0];
 
+export default function BookingForm({ onSubmit, isLoading, hotelId }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      checkIn: today,
-      checkOut: tomorrow,
-      roomNumber: 1,
+      checkIn: initialToday,
+      checkOut: initialTomorrow,
     },
+  });
+  const selectedCheckIn = useWatch({
+    control: form.control,
+    name: "checkIn",
   });
 
   const handleSubmit = (values) => {
@@ -56,8 +58,8 @@ export default function BookingForm({ onSubmit, isLoading, hotelId }) {
               <FormControl>
                 <input
                   type="date"
-                  className="border rounded-md px-3 py-2"
-                  min={today}
+                  className="rounded-full border px-4 py-2"
+                  min={initialToday}
                   {...field}
                 />
               </FormControl>
@@ -74,8 +76,8 @@ export default function BookingForm({ onSubmit, isLoading, hotelId }) {
               <FormControl>
                 <input
                   type="date"
-                  className="border rounded-md px-3 py-2"
-                  min={form.watch("checkIn") || today}
+                  className="rounded-full border px-4 py-2"
+                  min={selectedCheckIn || initialToday}
                   {...field}
                 />
               </FormControl>
@@ -83,26 +85,8 @@ export default function BookingForm({ onSubmit, isLoading, hotelId }) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="roomNumber"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Room Number</FormLabel>
-              <FormControl>
-                <input
-                  type="number"
-                  className="border rounded-md px-3 py-2"
-                  min="1"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Booking..." : "Book Now"}
+        <Button type="submit" className="black-pill w-full rounded-full" disabled={isLoading}>
+          {isLoading ? "Creating booking..." : "Continue to Payment"}
         </Button>
       </form>
     </Form>

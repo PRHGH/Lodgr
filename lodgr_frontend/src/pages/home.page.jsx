@@ -1,23 +1,13 @@
 import Hero from "../Components/Hero";
-
-import HotelListings from "../Components/HotelListings";
+import HotelsView from "../Components/HotelsView";
 
 function HomePage() {
-
-  // const count = useSelector((state) => state.counter);
-  // console.log(count);
-
-  // const dispatch = useDispatch();
-
   return (
-    <main>
-      <div className="relative min-h-[85vh]">
+    <main className="pb-16">
+      <div className="relative">
         <Hero />
       </div>
-      {/* <Button onClick={() => dispatch(incrementByAmount(5))}>
-        <PlusCircle className="w-4 h-4" />
-      </Button> */}
-      <HotelListings />
+      <HotelsView />
     </main>
   );
 }

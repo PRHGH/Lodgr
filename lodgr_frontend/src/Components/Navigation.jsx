@@ -1,151 +1,183 @@
-import { useRef, useState } from "react";
-import { Link } from "react-router";
+import { useState } from "react";
+import { Link, NavLink } from "react-router";
 import { Button } from "./ui/button";
-import { Globe, Menu, X } from "lucide-react";
+import { ArrowUpRight, Globe2, Menu, Plus, Search, X } from "lucide-react";
 import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
 
+const navLinkClass = ({ isActive }) =>
+  `inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition ${
+    isActive
+      ? "bg-neutral-950 text-white"
+      : "text-neutral-700 hover:bg-neutral-100 hover:text-neutral-950"
+  }`;
+
+const adminLinkClass = ({ isActive }) =>
+  `inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-sm transition ${
+    isActive
+      ? "bg-[#c9a46a] text-neutral-950"
+      : "bg-neutral-950 text-white hover:bg-[#c9a46a] hover:text-neutral-950"
+  }`;
+
 function Navigation() {
-    const { user } = useUser();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const menuRef = useRef(null);
+  const { user } = useUser();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    return(
-        <nav className="bg-[#2d3748] text-white border-[#e5e7eb] px-4 sm:px-6 py-3 shadow-md backdrop-blur-md justify-between mx-4 my-3 rounded-full flex items-center relative">
-            <div className="flex items-center space-x-8">
-                <Link to="/" className="text-3xl font-bold">
-                    Lodgr
-                </Link>
-                <div className="hidden md:flex space-x-6">
-                    <Link to="/" className="transition-colors text-sm hover:text-[#becee4]">
-                        Home
-                    </Link>
-                </div>
-            </div>
+  return (
+    <header className="sticky top-0 z-40 bg-background/85 py-3 backdrop-blur">
+      <nav className="editorial-shell">
+        <div className="flex h-14 items-center justify-between rounded-full border border-black/10 bg-white px-3 shadow-sm sm:px-5">
+        <div className="flex items-center gap-4 md:gap-8">
+          <Link to="/" className="flex items-center gap-3" aria-label="Lodgr home">
+            <span className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-neutral-950">
+              <img
+                src="/logo.svg"
+                alt=""
+                className="block h-8 w-8"
+                style={{ transform: "translateX(12%)" }}
+              />
+            </span>
+            <span>
+              <span className="block text-2xl font-semibold leading-none tracking-normal text-neutral-950">Lodgr</span>
+              <span className="hidden text-xs text-neutral-500 sm:block">
+                Editorial stays
+              </span>
+            </span>
+          </Link>
 
-            <div className="flex items-center space-x-4">   
-                <Button 
-                    variant="ghost" 
-                    size="sm"
-                    className="justify-start h-8 px-2 rounded-full hover:bg-[#5eead4]"
-                >
-                    <Globe className="mr-2 h-4 w-4" />  
-                    EN
-                </Button>
+          <div className="hidden items-center gap-1 md:flex">
+            <NavLink to="/hotels" className={navLinkClass}>
+              <Search className="h-4 w-4" />
+              Hotels
+            </NavLink>
+            {user?.publicMetadata?.role === "admin" && (
+              <NavLink to="/admin/create-hotel" className={adminLinkClass}>
+                <Plus className="h-4 w-4" />
+                Create Hotel
+              </NavLink>
+            )}
+          </div>
+        </div>
 
-                <SignedOut>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        asChild
-                        className="text-sm hidden md:flex rounded-full hover:bg-[#5eead4]"
-                    >
-                        <Link to="/sign-in">Log In</Link>
-                    </Button>
+        <div className="hidden items-center gap-3 md:flex">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-2 rounded-full text-neutral-700 hover:bg-neutral-100 hover:text-neutral-950"
+          >
+            <Globe2 className="h-4 w-4" />
+            EN
+          </Button>
 
-                    <Button size="sm" asChild className="text-sm bg-[#475569] border-2 border-[#475569] rounded-full hover:bg-[#64748b] hover:text-[#5eead4] hover:border-[#5eead4]">
-                        <Link to="/sign-up">Sign Up</Link>
-                    </Button>
-                </SignedOut>
+          <SignedOut>
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="rounded-full text-neutral-700 hover:bg-neutral-100 hover:text-neutral-950"
+            >
+              <Link to="/sign-in">Log In</Link>
+            </Button>
+            <Button size="sm" asChild className="black-pill h-9 rounded-full px-4">
+              <Link to="/sign-up">
+                Book now
+                <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </SignedOut>
 
-                <SignedIn>
-                    <UserButton />
-                    <Button
-                        size="sm"
-                        asChild
-                        className="bg-[#475569] border-2 border-[#475569] text-white rounded-full hover:bg-[#64748b] hover:text-[#5eead4] hover:border-[#5eead4] text-xs hidden md:flex"
-                    >
-                        <Link to="/account">My Account</Link>
-                    </Button>
-                </SignedIn>
+          <SignedIn>
+            <Button
+              size="sm"
+              asChild
+              className="rounded-full bg-neutral-950 text-white hover:bg-neutral-800"
+            >
+              <Link to="/my-account">My Account</Link>
+            </Button>
+            <UserButton />
+          </SignedIn>
+        </div>
 
-            <div className="relative md:hidden">
-              <Button
-                // ref={buttonRef}
-                variant="ghost"
-                size="icon"
-                className="relative z-20"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                aria-expanded={isMenuOpen}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full text-neutral-950 hover:bg-neutral-100 md:hidden"
+          onClick={() => setIsMenuOpen((open) => !open)}
+          aria-expanded={isMenuOpen}
+        >
+          {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          <span className="sr-only">{isMenuOpen ? "Close menu" : "Open menu"}</span>
+        </Button>
+        </div>
+      </nav>
+
+      {isMenuOpen && (
+        <div className="editorial-shell mt-2 md:hidden">
+          <div className="flex flex-col gap-2 rounded-2xl border border-black/10 bg-white p-3 shadow-lg">
+            <NavLink
+              to="/hotels"
+              className={navLinkClass}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Search className="h-4 w-4" />
+              Hotels
+            </NavLink>
+
+            {user?.publicMetadata?.role === "admin" && (
+              <NavLink
+                to="/admin/create-hotel"
+                className={adminLinkClass}
+                onClick={() => setIsMenuOpen(false)}
               >
-                {isMenuOpen ? (
-                  <X className="h-5 w-5" />
-                ) : (
-                  <Menu className="h-5 w-5" />
-                )}
-                <span className="sr-only">
-                  {isMenuOpen ? "Close menu" : "Open menu"}
-                </span>
-              </Button>
+                <Plus className="h-4 w-4" />
+                Create Hotel
+              </NavLink>
+            )}
 
-              {/* Dropdown Menu */}
-              {isMenuOpen && (
-                <div
-                  ref={menuRef}
-                  className="absolute right-0 mt-2 w-56 rounded-xl bg-black border border-gray-800 shadow-lg py-2 px-3 animate-in fade-in slide-in-from-top-5 duration-200 z-50"
-                  style={{ top: "calc(100% + 8px)" }}
-                >
-                  <div className="flex flex-col space-y-3 py-2">
-                    <a
-                      href="/"
-                      className="text-sm font-medium hover:text-gray-300 transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Home
-                    </a>
-                    {user?.publicMetadata?.role === "admin" && (
-                      <a
-                        href="/hotels/create"
-                        className="text-sm font-medium hover:text-gray-300 transition-colors"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        Create Hotel
-                      </a>
-                    )}
-                    <div className="h-px bg-white/20 my-1"></div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="justify-start h-8 px-2"
-                    >
-                      <Globe className="h-4 w-4 mr-2" />
-                      EN
-                    </Button>
-                    <SignedOut>
-                      <>
-                        <Link
-                          to="/sign-in"
-                          className="text-sm font-medium hover:text-gray-300 transition-colors"
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          Log In
-                        </Link>
-                        <Button
-                          size="sm"
-                          className="bg-white text-black hover:bg-gray-200 w-full mt-2"
-                          asChild
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          <Link to="/sign-up">Sign Up</Link>
-                        </Button>
-                      </>
-                    </SignedOut>
-                    <SignedIn>
-                      <Button
-                        size="sm"
-                        className="bg-white text-black hover:bg-gray-200 w-full mt-2"
-                        asChild
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        <Link to="/account">My Account</Link>
-                      </Button>
-                    </SignedIn>
-                  </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="justify-start gap-2 rounded-full text-neutral-700 hover:bg-neutral-100 hover:text-neutral-950"
+            >
+              <Globe2 className="h-4 w-4" />
+              EN
+            </Button>
+
+            <div className="mt-2 border-t border-black/10 pt-3">
+              <SignedOut>
+                <div className="grid gap-2">
+                  <Button
+                    variant="ghost"
+                    asChild
+                    className="justify-start rounded-full text-neutral-700 hover:bg-neutral-100 hover:text-neutral-950"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/sign-in">Log In</Link>
+                  </Button>
+                  <Button
+                    asChild
+                    className="black-pill rounded-full"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/sign-up">Sign Up</Link>
+                  </Button>
                 </div>
-              )}
-            </div>
+              </SignedOut>
 
+              <SignedIn>
+                <Button
+                  asChild
+                  className="w-full rounded-full bg-neutral-950 text-white hover:bg-neutral-800"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Link to="/my-account">My Account</Link>
+                </Button>
+              </SignedIn>
             </div>
-        </nav>
-    );
+          </div>
+        </div>
+      )}
+    </header>
+  );
 }
+
 export default Navigation;

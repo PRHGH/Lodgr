@@ -5,6 +5,9 @@ import RootLayout from "./Components/layouts/root-layout.page.jsx";
 import HomePage from "./pages/home.page.jsx";
 import HotelDetailsPage from "./pages/hotel-details.page.jsx";
 import HotelsPage from "./pages/hotels.page.jsx";
+import MyAccountPage from "./pages/my-account.page.jsx";
+import BookingPaymentPage from "./pages/booking-payment.page.jsx";
+import BookingCompletePage from "./pages/booking-complete.page.jsx";
 import NotFoundPage from "./pages/not-found.page.jsx";
 import SignInPage from "./pages/sign-in.page.jsx";
 import SignUpPage from "./pages/sign-up.page.jsx";
@@ -38,6 +41,12 @@ createRoot(document.getElementById("root")).render(
               <Route path="/hotels" element={<HotelsPage />} />
               <Route element={<ProtectLayout />}>
                 <Route path="/hotels/:_id" element={<HotelDetailsPage />} />
+                <Route path="/my-account" element={<MyAccountPage />} />
+                <Route path="/booking/payment" element={<BookingPaymentPage />} />
+                <Route
+                  path="/booking/payment/complete"
+                  element={<BookingCompletePage />}
+                />
                 <Route element={<AdminProtectLayout />}>
                   <Route
                     path="/admin/create-hotel"
