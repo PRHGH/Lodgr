@@ -15,6 +15,10 @@ import globalErrorHandlingMiddleware from "./api/middleware/global-error-handlin
 import { clerkMiddleware } from "@clerk/express";
 
 const app = express();
+const allowedOrigins = [
+  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+  "http://localhost:5173",
+];
 
 app.post(
   "/api/payments/webhook",
@@ -26,7 +30,7 @@ app.post(
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
   })
 );
 app.use(clerkMiddleware()); // Reads the JWT from the request and sets the auth object on the request
@@ -41,7 +45,7 @@ app.use(globalErrorHandlingMiddleware);
 
 connectDB();
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log("Server is listening on PORT: ", PORT);
 });
