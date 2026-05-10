@@ -10,6 +10,7 @@ import { useUser } from "@clerk/clerk-react";
 import {
   CalendarDays,
   CreditCard,
+  RefreshCw,
   MapPin,
   ReceiptText,
   Trash2,
@@ -49,7 +50,10 @@ export default function MyAccountPage() {
     refetch,
   } = useGetBookingsByUserIdQuery(
     user?.id,
-    { skip: !user?.id }
+    {
+      skip: !user?.id,
+      refetchOnMountOrArgChange: true,
+    }
   );
   const [cancelBooking] = useCancelBookingMutation();
 
@@ -106,16 +110,27 @@ export default function MyAccountPage() {
               Your stays
             </h2>
           </div>
-          <select
-            className="w-full rounded-full border bg-white px-4 py-2 text-sm sm:w-44"
-            value={status}
-            onChange={(event) => setStatus(event.target.value)}
-          >
-            <option value="ALL">All statuses</option>
-            <option value="PENDING">Pending</option>
-            <option value="PAID">Paid</option>
-            <option value="FAILED">Failed</option>
-          </select>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button
+              type="button"
+              variant="outline"
+              className="rounded-full bg-white"
+              onClick={refetch}
+            >
+              <RefreshCw className="h-4 w-4" />
+              Refresh
+            </Button>
+            <select
+              className="w-full rounded-full border bg-white px-4 py-2 text-sm sm:w-44"
+              value={status}
+              onChange={(event) => setStatus(event.target.value)}
+            >
+              <option value="ALL">All statuses</option>
+              <option value="PENDING">Pending</option>
+              <option value="PAID">Paid</option>
+              <option value="FAILED">Failed</option>
+            </select>
+          </div>
         </div>
 
         {isLoading ? (
