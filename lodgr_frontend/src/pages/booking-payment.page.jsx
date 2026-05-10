@@ -3,12 +3,13 @@ import Breadcrumbs from "@/Components/Breadcrumbs";
 import { Badge } from "@/Components/ui/badge";
 import { Card, CardContent } from "@/Components/ui/card";
 import { useGetBookingByIdQuery } from "@/lib/api";
-import { CalendarDays, DoorOpen, ReceiptText } from "lucide-react";
+import { CalendarDays, CheckCircle2, DoorOpen, ReceiptText } from "lucide-react";
 import { useSearchParams } from "react-router";
 
 export default function BookingPaymentPage() {
   const [searchParams] = useSearchParams();
   const bookingId = searchParams.get("bookingId");
+  const wasJustCreated = searchParams.get("created") === "1";
   const { data: booking, isLoading } = useGetBookingByIdQuery(bookingId, {
     skip: !bookingId,
   });
@@ -49,6 +50,17 @@ export default function BookingPaymentPage() {
       <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
         <Card className="h-fit rounded-[2rem] border-black/10 bg-white shadow-sm lg:sticky lg:top-24">
           <CardContent className="space-y-5 p-5">
+            {wasJustCreated && (
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+                <p className="flex items-center gap-2 font-medium">
+                  <CheckCircle2 className="h-4 w-4" />
+                  Booking created successfully
+                </p>
+                <p className="mt-1 text-emerald-800/80">
+                  It is saved as pending. Complete payment below to confirm your stay.
+                </p>
+              </div>
+            )}
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-sm text-muted-foreground">Booking summary</p>

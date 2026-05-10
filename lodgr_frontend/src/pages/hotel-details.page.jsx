@@ -8,6 +8,7 @@ import { MapPin, ShieldCheck, Sparkles, Star } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { BookingDialog } from "@/Components/BookingDialog";
+import { toast } from "sonner";
 
 const quickFacts = (hotel) => [
   `${hotel.starRating ?? 4} star hotel`,
@@ -48,7 +49,10 @@ const HotelDetailsPage = () => {
         throw result;
       }
 
-      navigate(`/booking/payment?bookingId=${result._id}`);
+      toast.success("Booking created", {
+        description: "Your stay is reserved as pending until payment is complete.",
+      });
+      navigate(`/booking/payment?bookingId=${result._id}&created=1`);
     } finally {
       setIsCreateBookingLoading(false);
     }
